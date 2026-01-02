@@ -12,7 +12,6 @@ class User(Base):
     role = Column(String, default="staff") 
 
 class InventoryItem(Base):
-    """Represents Frames, GlassTypes, etc."""
     __tablename__ = "inventory"
     id = Column(Integer, primary_key=True, index=True)
     type = Column(String, index=True) 
