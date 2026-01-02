@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
@@ -7,7 +8,15 @@ import models, schemas, auth as auth, database
 
 models.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI(title="Shreyas Opticians API")
+app = FastAPI(title="tally-optics-backend", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"],  
+)
 
 @app.post("/auth/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
