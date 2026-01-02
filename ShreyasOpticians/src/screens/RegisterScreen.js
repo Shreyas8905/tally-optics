@@ -10,23 +10,31 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../context/AuthContext';
 
-const LoginScreen = ({ navigation }) => { // Added navigation prop
-  const { login } = useContext(AuthContext);
+const RegisterScreen = ({ navigation }) => {
+  const { register } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
+    if (!username || !password) {
+      Alert.alert('Error', 'Please enter both username and password');
+      return;
+    }
+
     try {
-      await login(username, password);
+      await register(username, password);
+      Alert.alert('Success', 'Registration successful! Please login.', [
+        { text: 'OK', onPress: () => navigation.navigate('Login') }
+      ]);
     } catch (e) {
-      Alert.alert('Login Failed', 'Invalid username or password');
+      Alert.alert('Registration Failed', 'Username may already be taken or server error.');
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Shreyas Opticians</Text>
+        <Text style={styles.title}>Create Account</Text>
         
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Username</Text>
@@ -34,7 +42,7 @@ const LoginScreen = ({ navigation }) => { // Added navigation prop
             style={styles.input}
             value={username}
             onChangeText={setUsername}
-            placeholder="Enter username"
+            placeholder="Choose a username"
             autoCapitalize="none"
           />
         </View>
@@ -46,18 +54,17 @@ const LoginScreen = ({ navigation }) => { // Added navigation prop
             value={password}
             onChangeText={setPassword}
             secureTextEntry={true} 
-            placeholder="Enter password"
+            placeholder="Choose a password"
           />
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Register</Text>
         </TouchableOpacity>
 
-        {/* NEW: Navigation to Register */}
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
           <Text style={styles.linkText}>
-            Don't have an account? Register
+            Already have an account? Login
           </Text>
         </TouchableOpacity>
       </View>
@@ -98,7 +105,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#388E3C', // Different color for register
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
@@ -117,4 +124,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default LoginScreen;
+export default RegisterScreen;

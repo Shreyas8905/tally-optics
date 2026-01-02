@@ -23,6 +23,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // NEW: Register function
+  const register = async (username, password) => {
+    try {
+      await client.post('/auth/register', {
+        username,
+        password,
+      });
+    } catch (error) {
+      console.error("Registration Failed", error);
+      throw error;
+    }
+  };
+
   const logout = async () => {
     setUserToken(null);
     await AsyncStorage.removeItem('userToken');
@@ -44,7 +57,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ login, logout, isLoading, userToken }}>
+    <AuthContext.Provider value={{ login, logout, register, isLoading, userToken }}>
       {children}
     </AuthContext.Provider>
   );

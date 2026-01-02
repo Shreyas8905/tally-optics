@@ -1,8 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const BASE_URL =
-  "https://tally-optics-5n1tsbp7n-shreyas-projects-885491d1.vercel.app";
+const BASE_URL = "https://tally-optics.vercel.app";
 
 const client = axios.create({
   baseURL: BASE_URL,
