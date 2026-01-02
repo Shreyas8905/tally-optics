@@ -6,6 +6,7 @@ from typing import List
 from datetime import datetime
 import models, schemas, auth as auth, database
 
+# Create tables
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(title="tally-optics-backend", version="1.0.0")
@@ -17,6 +18,29 @@ app.add_middleware(
     allow_methods=["*"], 
     allow_headers=["*"],  
 )
+
+# --- NEW: Startup Event to Seed Database ---
+@app.on_event("startup")
+def startup_event():
+    db = database.SessionLocal()
+    try:
+        # Check if Inventory ID 1 exists
+        if not db.query(models.InventoryItem).filter(models.InventoryItem.id == 1).first():
+            print("Creating default inventory item (ID: 1)...")
+            default_item = models.InventoryItem(
+                id=1, 
+                type="general", 
+                description="Default Item", 
+                cost=0, 
+                stock_on_hand=100
+            )
+            db.add(default_item)
+            db.commit()
+    except Exception as e:
+        print(f"Startup seeding failed: {e}")
+    finally:
+        db.close()
+# -------------------------------------------
 
 @app.post("/auth/register", response_model=schemas.UserResponse)
 def register_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
