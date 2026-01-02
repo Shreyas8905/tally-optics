@@ -1,6 +1,6 @@
-import React, { createContext, useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import client from "../api/client";
+import React, { createContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import client from '../api/client';
 
 export const AuthContext = createContext();
 
@@ -10,31 +10,32 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await client.post("/auth/login", {
+      const response = await client.post('/auth/login', {
         username,
         password,
       });
       const token = response.data.access_token;
       setUserToken(token);
-      await AsyncStorage.setItem("userToken", token);
+      await AsyncStorage.setItem('userToken', token);
     } catch (error) {
-      console.error("Login Failed", error);
-      throw error; // Throw to be handled by the screen
+        console.error("Login Failed", error);
+        throw error;
     }
   };
 
   const logout = async () => {
     setUserToken(null);
-    await AsyncStorage.removeItem("userToken");
+    await AsyncStorage.removeItem('userToken');
   };
 
   const isLoggedIn = async () => {
     try {
-      let token = await AsyncStorage.getItem("userToken");
+      let token = await AsyncStorage.getItem('userToken');
       setUserToken(token);
-      setIsLoading(false);
     } catch (e) {
       console.log(`isLoggedIn error ${e}`);
+    } finally {
+      setIsLoading(false);
     }
   };
 
